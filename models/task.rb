@@ -1,5 +1,3 @@
-require 'ohm'
-
 class Task < Ohm::Model
   attribute :name
   attribute :description
