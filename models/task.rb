@@ -6,4 +6,16 @@ class Task < Ohm::Model
 
   index :name
   index :created_at
+
+  def self.todos
+    Task.all
+  end
+
+  def done!
+    self.state = 'Completed'
+  end
+
+  def undone!
+    self.state = 'todo'
+  end
 end
