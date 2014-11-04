@@ -1,5 +1,6 @@
 require "./config/#{ ENV['RACK_ENV'] || 'development' }"
 
+require 'grape'
 require 'ohm'
 Ohm.redis = Redic.new(ENV['REDISTOGO_URL'])
 
@@ -7,4 +8,4 @@ Ohm.redis = Redic.new(ENV['REDISTOGO_URL'])
 require './models/task'
 
 #api
-require './api/task'
+require './api/tasks'

@@ -1,10 +1,10 @@
 require './config/application'
 
-class SAITW < Grape::API
+class MyTodo < Grape::API
   version 'v1', using: :header, vendor: 'saitw'
   format :json
 
-  mount SAITW::Task
+  mount Tasks
 
   add_swagger_documentation({
     api_version: 'v1',

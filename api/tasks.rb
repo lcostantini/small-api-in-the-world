@@ -1,4 +1,4 @@
-class SAITW::Task < Grape::API
+class Tasks < Grape::API
 
   resource :task do
     desc "List all todos"
