@@ -20,7 +20,7 @@ scope do
 
   test '#done! should set a task as done' do
     @task.done!
-    assert task.state == 'done'
+    assert @task.state == 'done'
     assert Task.todos.count == 0
   end
 

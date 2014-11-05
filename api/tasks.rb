@@ -7,6 +7,7 @@ class Tasks < Grape::API
   end
 
   resource :tasks do
+
     desc "List all todos"
     get do
       Task.todos
@@ -26,7 +27,7 @@ class Tasks < Grape::API
 
       desc "Update a task with params"
       put do
-        task.update_attribute params[:task]
+        task.update params[:task]
       end
 
       desc "Mark a task as done"

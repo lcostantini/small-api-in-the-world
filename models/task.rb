@@ -1,4 +1,5 @@
 class Task < Ohm::Model
+
   attribute :name
   attribute :description
   attribute :created_at
@@ -6,16 +7,23 @@ class Task < Ohm::Model
 
   index :name
   index :created_at
+  index :state
 
   def self.todos
-    Task.all
+    find(state: 'todo')
   end
 
   def done!
-    self.state = 'Completed'
+    update state: 'done'
   end
 
   def undone!
-    self.state = 'todo'
+    update state: 'todo'
   end
+
+  def save
+    self.state = 'todo' if new?
+    super
+  end
+
 end
