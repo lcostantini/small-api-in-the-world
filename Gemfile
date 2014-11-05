@@ -6,6 +6,7 @@ gem 'grape'
 gem 'ohm', '~> 2.0.1'
 
 group :development, :test do
+  gem 'dotenv'
   gem 'pry'
 end
 
