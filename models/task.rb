@@ -22,8 +22,15 @@ class Task < Ohm::Model
   end
 
   def save
-    self.state = 'todo' if new?
+    initial_values if new?
     super
+  end
+
+  private
+
+  def initial_values
+    self.created_at = Date.today.to_s
+    self.state = 'todo'
   end
 
 end
