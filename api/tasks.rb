@@ -2,7 +2,7 @@ class Tasks < Grape::API
 
   helpers do
     def task
-      @task ||= Task.find params[:id]
+      @task ||= Task[params[:id]]
     end
   end
 
@@ -23,6 +23,10 @@ class Tasks < Grape::API
       Task.create params[:task]
     end
 
+    desc "Update a task."
+    params do
+      requires :id, type: Integer, desc: "Task id."
+    end
     route_param :id do
 
       desc "Update a task with params"
@@ -42,7 +46,7 @@ class Tasks < Grape::API
 
       desc "Delete a task"
       delete do
-        task.destroy
+        task.delete
       end
     end
 
