@@ -4,8 +4,5 @@ require 'grape'
 require 'ohm'
 Ohm.redis = Redic.new(ENV['REDISTOGO_URL'])
 
-#models
 require './models/task'
-
-#api
 require './api/tasks'
