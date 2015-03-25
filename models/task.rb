@@ -1,16 +1,21 @@
 class Task < Ohm::Model
-
   attribute :name
   attribute :description
   attribute :created_at
   attribute :state
+  attribute :category
 
   index :name
   index :created_at
   index :state
+  index :category
 
   def self.todos
-    find(state: 'todo')
+    find state: 'todo'
+  end
+
+  def self.categories topic
+    find category: topic
   end
 
   def done!
@@ -32,5 +37,4 @@ class Task < Ohm::Model
     self.created_at = Date.today.to_s
     self.state = 'todo'
   end
-
 end
