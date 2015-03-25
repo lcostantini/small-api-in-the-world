@@ -14,7 +14,7 @@ class Task < Ohm::Model
     find state: 'todo'
   end
 
-  def self.categories topic
+  def self.category topic
     find category: topic
   end
 
