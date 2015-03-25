@@ -28,7 +28,7 @@ scope do
   end
 
   test '#categories should return all the task with some category' do
-    assert_equal Task.categories('testing').count, 1
+    assert_equal Task.category('testing').count, 1
   end
 
   test 'update a task' do
