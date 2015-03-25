@@ -10,12 +10,12 @@ class Tasks < Grape::API
 
     desc "List all todos"
     get do
-      Task.todos.map(&:attributes)
+      Task.todos.map { |t| t.attributes.merge id: t.id }
     end
 
     desc "List all tasks"
     get :all do
-      Task.all.map(&:attributes)
+      Task.all.map { |t| t.attributes.merge id: t.id }
     end
 
     desc "Create a new task"
