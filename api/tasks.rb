@@ -23,6 +23,14 @@ class Tasks < Grape::API
       Task.create params[:task]
     end
 
+    desc 'List all tasks for a specific category.'
+    params do
+      requires :topic, type: String, desc: "Task category."
+    end
+    get :category do
+      Task.category(params[:topic]).map { |t| t.attributes.merge id: t.id }
+    end
+
     desc "Update a task."
     params do
       requires :id, type: Integer, desc: "Task id."
