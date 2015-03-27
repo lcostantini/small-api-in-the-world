@@ -39,7 +39,7 @@ class Tasks < Grape::API
 
       desc "Update a task with params"
       put do
-        task.update params[:task]
+        task.update params[:task].reject { |k, v| v.nil? }
       end
 
       desc "Mark a task as done"
