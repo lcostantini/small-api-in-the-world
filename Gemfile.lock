@@ -54,6 +54,8 @@ GEM
       rack (>= 0.4)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
+    rack-test (0.6.2)
+      rack (>= 1.0)
     redic (1.1.1)
       hiredis
     slop (3.6.0)
@@ -75,3 +77,4 @@ DEPENDENCIES
   grape
   ohm (~> 2.0.1)
   pry
+  rack-test

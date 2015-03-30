@@ -1,9 +1,20 @@
 class Tasks < Grape::API
-
   helpers do
     def task
       @task ||= Task[params[:id]]
     end
+
+    def current_user
+      false
+    end
+
+    def authenticate!
+      error!('401 Unauthorized', 401) unless current_user
+    end
+  end
+
+  before do
+    authenticate!
   end
 
   resource :tasks do
@@ -59,5 +70,4 @@ class Tasks < Grape::API
     end
 
   end
-
 end
