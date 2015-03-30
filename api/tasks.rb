@@ -5,7 +5,7 @@ class Tasks < Grape::API
     end
 
     def current_user
-      @current_user ||= User.find params[:api_token]
+      @current_user ||= User.with :token, params[:api_token]
     end
 
     def authenticate!

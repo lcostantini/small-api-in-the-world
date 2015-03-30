@@ -5,4 +5,5 @@ require 'ohm'
 Ohm.redis = Redic.new(ENV['REDISTOGO_URL'])
 
 require './models/task'
+require './models/user'
 require './api/tasks'
