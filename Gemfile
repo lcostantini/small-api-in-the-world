@@ -4,6 +4,7 @@ ruby '2.1.2'
 
 gem 'grape'
 gem 'ohm', '~> 2.0.1'
+gem 'json'
 
 group :development, :test do
   gem 'dotenv'
@@ -13,4 +14,5 @@ end
 group :test do
   gem 'rack-test'
   gem 'cutest'
+  gem 'override'
 end
