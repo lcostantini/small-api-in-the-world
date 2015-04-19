@@ -5,5 +5,4 @@ class MyTodo < Grape::API
   format :json
 
   mount Tasks
-
 end

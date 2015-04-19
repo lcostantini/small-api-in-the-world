@@ -4,19 +4,11 @@ class Task < Ohm::Model
   attribute :created_at
   attribute :state
   attribute :category
-
   index :name
   index :created_at
   index :state
   index :category
-
-  def self.todos
-    find state: 'todo'
-  end
-
-  def self.category topic
-    find category: topic
-  end
+  reference :user, :User
 
   def done!
     update state: 'done'
