@@ -1,7 +1,13 @@
 ENV['RACK_ENV'] = 'test'
 
 require './config/application'
+require './app'
+require 'rack/test'
 
-prepare do
-  Ohm.flush
+class Cutest::Scope
+  include Rack::Test::Methods
+
+  def app
+    MyTodo
+  end
 end
