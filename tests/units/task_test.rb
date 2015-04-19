@@ -1,43 +1,69 @@
 require './tests/test_helper'
 
-scope do
-  setup do
-    @task = Task.create name: 'Test api', category: 'testing'
+def current_user
+  @current_user ||= User.with :token, 'good-token'
+end
+
+def task_body
+  { task: { name: 'Make coffee',
+            category: 'testing' } }
+end
+
+def task
+  current_user.tasks.add Task.create task_body[:task]
+end
+
+scope 'With valid user and token' do
+  prepare do
+    Ohm.flush
+    User.create email: 'jack@mail.com', token: 'good-token'
+    header 'User-Token', 'good-token'
   end
 
-  test 'Task is saved' do
-    assert_equal Task.all.count, 1
+  test 'Create a new task' do
+    post '/tasks', task_body
+    assert_equal current_user.tasks.count, 1
   end
 
-  test 'A task must be on "todo" state when is created' do
-    assert_equal @task.state, 'todo'
+  test 'User\'s todo tasks' do
+    task
+    get '/tasks'
+    tasks = JSON.parse last_response.body
+    assert_equal tasks.size, 1
   end
 
-  test '#todos should show all the task whit todo state' do
-    assert_equal Task.todos.count, 1
+  test 'Get all tasks for a specific category' do
+    task
+    get '/tasks/category?topic=testing'
+    tasks = JSON.parse last_response.body
+    assert_equal tasks.first['name'], 'Make coffee'
   end
 
-  test '#done! should set a task as done' do
-    @task.done!
-    assert_equal @task.state, 'done'
-    assert_equal Task.todos.count, 0
+  test 'Update a task' do
+    put "/tasks/#{ task }", task: { name: 'Make mates' }
+    assert_equal current_user.tasks.first.attributes[:name], 'Make mates'
   end
 
-  test '#all should show all the task' do
-    assert_equal Task.all.count, 1
+  test 'Delete a task' do
+    delete "/tasks/#{ task }"
+    assert_equal current_user.tasks.count, 0
   end
 
-  test '#categories should return all the task with some category' do
-    assert_equal Task.category('testing').count, 1
+  test 'Mark a task as done' do
+    put "/tasks/#{ task }/done"
+    assert_equal current_user.tasks.first.attributes[:state], 'done'
   end
 
-  test 'update a task' do
-    @task.update category: 'update'
-    assert_equal @task.category, 'update'
+  test 'Mark a task as undone' do
+    put "/tasks/#{ task }/undone"
+    assert_equal current_user.tasks.first.attributes[:state], 'todo'
   end
 
-  test 'delete a task' do
-    @task.delete
-    assert_equal Task.all.count, 0
+  test 'Get all the tasks' do
+    current_user.tasks.add Task.create name: 'Now is make'
+    put "/tasks/#{ task }/done"
+    assert_equal current_user.tasks.count, 2
+    assert_equal current_user.tasks.first.attributes[:state], 'done'
+    assert_equal current_user.tasks[2].attributes[:state], 'todo'
   end
 end

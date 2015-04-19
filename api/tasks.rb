@@ -5,11 +5,16 @@ class Tasks < Grape::API
     end
 
     def current_user
-      @current_user ||= User.with :token, params[:api_token]
+      @current_user ||= User.find_or_create headers['User-Token']
     end
 
     def authenticate!
-      error!('401 Unauthorized', 401) unless current_user
+      error!('401 Unauthorized', 401) unless headers['User-Token'] &&
+                                             current_user
+    end
+
+    def merge_id_in_attr list
+      list.to_a.map { |t| t.attributes.merge id: t.id }
     end
   end
 
@@ -21,17 +26,17 @@ class Tasks < Grape::API
 
     desc "List all todos"
     get do
-      Task.todos.map { |t| t.attributes.merge id: t.id }
+      merge_id_in_attr current_user.tasks.find state: 'todo'
     end
 
     desc "List all tasks"
     get :all do
-      Task.all.map { |t| t.attributes.merge id: t.id }
+      current_user.tasks
     end
 
     desc "Create a new task"
     post do
-      Task.create params[:task]
+      current_user.tasks.add Task.create params[:task]
     end
 
     desc 'List all tasks for a specific category.'
@@ -39,10 +44,10 @@ class Tasks < Grape::API
       requires :topic, type: String, desc: "Task category."
     end
     get :category do
-      Task.category(params[:topic]).map { |t| t.attributes.merge id: t.id }
+      merge_id_in_attr current_user.tasks.find category: params[:topic]
     end
 
-    desc "Update a task."
+    desc "Operating on a task."
     params do
       requires :id, type: Integer, desc: "Task id."
     end
@@ -65,7 +70,7 @@ class Tasks < Grape::API
 
       desc "Delete a task"
       delete do
-        task.delete
+        current_user.tasks.delete task
       end
     end
 
