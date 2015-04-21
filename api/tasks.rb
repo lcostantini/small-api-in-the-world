@@ -1,76 +1,70 @@
-class Tasks < Grape::API
-  helpers do
-    def task
-      @task ||= Task[params[:id]]
-    end
+def current_user
+  @current_user ||= User.find_or_create env["HTTP_USER_TOKEN"]
+end
 
-    def current_user
-      @current_user ||= User.find_or_create headers['User-Token']
-    end
+def authenticate!
+  raise(StandardError, 'Unauthorized') unless env['HTTP_USER_TOKEN'] &&
+                                              current_user
+end
 
-    def authenticate!
-      error!('401 Unauthorized', 401) unless headers['User-Token'] &&
-                                             current_user
-    end
+def merge_id_in_attr list
+  list.to_a.map { |t| t.attributes.merge id: t.id }
+end
 
-    def merge_id_in_attr list
-      list.to_a.map { |t| t.attributes.merge id: t.id }
-    end
-  end
+def json_body
+  JSON.parse req.body.read, symbolize_names: true
+end
 
-  before do
-    authenticate!
-  end
+class Tasks < Cuba
+  define do
+    begin
 
-  resource :tasks do
+      authenticate!
 
-    desc "List all todos"
-    get do
-      merge_id_in_attr current_user.tasks.find state: 'todo'
-    end
+      on get do
+        on root do
+          res.write merge_id_in_attr(current_user.tasks.find(state: 'todo')).to_json
+        end
 
-    desc "List all tasks"
-    get :all do
-      current_user.tasks
-    end
+        on 'all' do
+          res.write current_user.tasks.to_json
+        end
 
-    desc "Create a new task"
-    post do
-      current_user.tasks.add Task.create params[:task]
-    end
-
-    desc 'List all tasks for a specific category.'
-    params do
-      requires :topic, type: String, desc: "Task category."
-    end
-    get :category do
-      merge_id_in_attr current_user.tasks.find category: params[:topic]
-    end
-
-    desc "Operating on a task."
-    params do
-      requires :id, type: Integer, desc: "Task id."
-    end
-    route_param :id do
-
-      desc "Update a task with params"
-      put do
-        task.update params[:task].reject { |k, v| v.nil? }
+        on 'category', param('topic') do |query|
+          res.write merge_id_in_attr(current_user.tasks.find(category: query)).to_json
+        end
       end
 
-      desc "Mark a task as done"
-      put :done do
-        task.done!
+      on post do
+        res.write current_user.tasks.add Task.create json_body[:task]
       end
 
-      desc "Mark a task as undone"
-      put :undone do
-        task.undone!
+      on ':id' do |id|
+        task = Task[id]
+
+        on put do
+          on param('task') do |params|
+            res.write task.update params.reject { |_, v| v.nil? }
+          end
+
+          on 'done' do
+            res.write task.done!
+          end
+
+          on 'undone' do
+            res.write task.undone!
+          end
+        end
+
+        on delete do
+          current_user.tasks.delete task
+        end
       end
 
-      desc "Delete a task"
-      delete do
-        current_user.tasks.delete task
+    rescue StandardError => e
+      on true do
+        res.status = 401
+        res.write errors: e.message
       end
     end
 

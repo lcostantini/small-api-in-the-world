@@ -6,7 +6,7 @@ class User < Ohm::Model
   set :tasks, :Task
 
   def self.find_or_create token
-    with(:token, token) ||
+    with(:token, token) or
       create(email: get_email_from_token(token), token: token)
   end
 

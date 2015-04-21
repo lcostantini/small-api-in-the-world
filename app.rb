@@ -1,8 +1,7 @@
 require './config/application'
 
-class MyTodo < Grape::API
-  version 'v1', using: :header, vendor: 'saitw'
-  format :json
-
-  mount Tasks
+Cuba.define do
+  on 'tasks' do
+    run Tasks
+  end
 end

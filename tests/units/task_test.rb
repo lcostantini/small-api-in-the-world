@@ -13,6 +13,10 @@ def task
   current_user.tasks.add Task.create task_body[:task]
 end
 
+def body_json
+  JSON.parse last_response.body, symbolize_names: true
+end
+
 scope 'With valid user and token' do
   prepare do
     Ohm.flush
@@ -21,22 +25,20 @@ scope 'With valid user and token' do
   end
 
   test 'Create a new task' do
-    post '/tasks', task_body
+    post '/tasks', task_body.to_json
     assert_equal current_user.tasks.count, 1
   end
 
   test 'User\'s todo tasks' do
     task
     get '/tasks'
-    tasks = JSON.parse last_response.body
-    assert_equal tasks.size, 1
+    assert_equal body_json.size, 1
   end
 
   test 'Get all tasks for a specific category' do
     task
     get '/tasks/category?topic=testing'
-    tasks = JSON.parse last_response.body
-    assert_equal tasks.first['name'], 'Make coffee'
+    assert_equal body_json.first[:name], 'Make coffee'
   end
 
   test 'Update a task' do

@@ -1,3 +1,3 @@
 require './app'
 
-run MyTodo
+run Cuba

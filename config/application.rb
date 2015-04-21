@@ -1,6 +1,6 @@
 require "./config/#{ ENV['RACK_ENV'] || 'development' }"
 
-require 'grape'
+require 'cuba'
 require 'ohm'
 require 'json'
 require './api/tasks'

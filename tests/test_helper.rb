@@ -8,6 +8,6 @@ class Cutest::Scope
   include Rack::Test::Methods
 
   def app
-    MyTodo
+    Cuba
   end
 end
