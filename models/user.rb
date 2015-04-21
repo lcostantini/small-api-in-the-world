@@ -12,6 +12,7 @@ class User < Ohm::Model
 
   def self.create *args
     return nil unless args[0][:email]
+    return self.with(:email, args[0][:email]) if with(:email, args[0][:email])
     super
   end
 
