@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.1.2'
 
-gem 'grape'
+gem 'cuba'
 gem 'ohm', '~> 2.0.1'
 gem 'json'
 
