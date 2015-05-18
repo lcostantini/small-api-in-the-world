@@ -1,7 +1,7 @@
 require './tests/test_helper'
 
-def current_user
-  @current_user ||= User.with :token, 'good-token'
+def user
+  @user ||= User.with :token, 'good-token'
 end
 
 def task_body
@@ -10,7 +10,7 @@ def task_body
 end
 
 def task
-  current_user.tasks.add Task.create task_body[:task]
+  user.tasks.add Task.create task_body[:task]
 end
 
 def body_json
@@ -26,7 +26,7 @@ scope 'With valid user and token' do
 
   test 'Create a new task' do
     post '/tasks', task_body.to_json
-    assert_equal current_user.tasks.count, 1
+    assert_equal user.tasks.count, 1
   end
 
   test 'User\'s todo tasks' do
@@ -42,30 +42,30 @@ scope 'With valid user and token' do
   end
 
   test 'Update a task' do
-    put "/tasks/#{ task }", task: { name: 'Make mates' }
-    assert_equal current_user.tasks.first.attributes[:name], 'Make mates'
+    put "/tasks/#{ task }", { task: { name: 'Make mates' } }.to_json
+    assert_equal user.tasks.first.attributes[:name], 'Make mates'
   end
 
   test 'Delete a task' do
     delete "/tasks/#{ task }"
-    assert_equal current_user.tasks.count, 0
+    assert_equal user.tasks.count, 0
   end
 
   test 'Mark a task as done' do
     put "/tasks/#{ task }/done"
-    assert_equal current_user.tasks.first.attributes[:state], 'done'
+    assert_equal user.tasks.first.attributes[:state], 'done'
   end
 
   test 'Mark a task as undone' do
     put "/tasks/#{ task }/undone"
-    assert_equal current_user.tasks.first.attributes[:state], 'todo'
+    assert_equal user.tasks.first.attributes[:state], 'todo'
   end
 
   test 'Get all the tasks' do
-    current_user.tasks.add Task.create name: 'Now is make'
+    user.tasks.add Task.create name: 'Now is make'
     put "/tasks/#{ task }/done"
-    assert_equal current_user.tasks.count, 2
-    assert_equal current_user.tasks.first.attributes[:state], 'done'
-    assert_equal current_user.tasks[2].attributes[:state], 'todo'
+    assert_equal user.tasks.count, 2
+    assert_equal user.tasks.first.attributes[:state], 'done'
+    assert_equal user.tasks[2].attributes[:state], 'todo'
   end
 end
