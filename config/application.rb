@@ -6,4 +6,4 @@ require 'json'
 require './api/tasks'
 Dir["./models/*.rb"].each { |rb| require rb  }
 
-Ohm.redis = Redic.new(ENV['REDISTOGO_URL'])
+Ohm.redis = Redic.new ENV['REDISTOGO_URL']

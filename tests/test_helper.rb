@@ -1,6 +1,5 @@
 ENV['RACK_ENV'] = 'test'
 
-require './config/application'
 require './app'
 require 'rack/test'
 

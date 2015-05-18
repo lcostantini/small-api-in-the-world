@@ -1,1 +1,1 @@
-Dir["./tests/units/*.rb"].each { |rb| require rb  }
+Dir["./tests/units/*.rb"].each { |rb| require rb }

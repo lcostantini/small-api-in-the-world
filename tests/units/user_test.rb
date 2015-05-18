@@ -1,6 +1,5 @@
 require './tests/test_helper'
 require 'override'
-
 include Override
 
 prepare do
