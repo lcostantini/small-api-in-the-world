@@ -1,10 +1,9 @@
 def current_user
-  @current_user ||= User.find_or_create env["HTTP_USER_TOKEN"]
+  @current_user ||= User.find_or_create env['HTTP_USER_TOKEN']
 end
 
 def authenticate!
-  raise(StandardError, 'Unauthorized') unless env['HTTP_USER_TOKEN'] &&
-                                              current_user
+  raise(StandardError, 'Unauthorized') unless env['HTTP_USER_TOKEN'] && current_user
 end
 
 def merge_id_in_attr list
