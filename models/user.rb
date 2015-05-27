@@ -6,20 +6,19 @@ class User < Ohm::Model
   set :tasks, :Task
 
   def self.find_or_create token
-    with(:token, token) or
-      create(email: get_email_from_token(token), token: token)
+    with(:token, token) ||
+      with(:email, email_from_token(token)) ||
+        create(email: email_from_token(token), token: token)
   end
 
-  def self.create *args
-    return nil unless args[0][:email]
-    return self.with(:email, args[0][:email]) if with(:email, args[0][:email])
+  def self.create args
+    raise 'The token was invalid and no return an email.' unless args[:email]
     super
   end
 
   private
 
-  def self.get_email_from_token token
-    valid_user = JSON.parse `curl -u #{ token }:x-oauth-basic https://api.github.com/user`
-    valid_user['email']
+  def email_from_token token
+    @email ||= JSON.parse(`curl -u #{ token }:x-oauth-basic https://api.github.com/user`)['email']
   end
 end
