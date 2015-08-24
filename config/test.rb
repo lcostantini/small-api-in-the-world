@@ -1,4 +1,4 @@
 require 'cutest'
 require 'pry'
-require 'dotenv'
-Dotenv.load(".test.env")
+
+ENV['REDISTOGO_URL'] = "redis://localhost:6379/2"

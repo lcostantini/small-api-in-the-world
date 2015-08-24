@@ -1,3 +1,3 @@
 require 'pry'
-require 'dotenv'
-Dotenv.load
+
+ENV['REDISTOGO_URL'] = "redis://localhost:6379"

@@ -7,7 +7,6 @@ gem 'ohm', '~> 2.0.1'
 gem 'json'
 
 group :development, :test do
-  gem 'dotenv'
   gem 'pry'
 end
 
