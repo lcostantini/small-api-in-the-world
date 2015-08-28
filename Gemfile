@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.2'
+ruby '2.2.1'
 
 gem 'cuba'
 gem 'ohm', '~> 2.0.1'
