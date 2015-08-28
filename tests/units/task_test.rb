@@ -18,8 +18,7 @@ def body_json
 end
 
 scope 'With valid user and token' do
-  prepare do
-    Ohm.flush
+  setup do
     User.create email: 'jack@mail.com', token: 'good-token'
     header 'User-Token', 'good-token'
   end

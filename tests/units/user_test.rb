@@ -2,11 +2,11 @@ require './tests/test_helper'
 require 'override'
 include Override
 
-prepare do
-  Ohm.flush
-end
-
 scope 'With invalid tokens' do
+  setup do
+    Ohm.flush
+  end
+
   test 'Don\'t create a user without token' do
     get '/tasks'
     assert_equal User.all.count, 0
@@ -23,7 +23,7 @@ scope 'With invalid tokens' do
 end
 
 scope 'With valid tokens' do
-  prepare do
+  setup do
     header 'User-Token', 'good-token'
   end
 
