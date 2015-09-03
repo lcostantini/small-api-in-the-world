@@ -1,7 +1,3 @@
-def current_user
-  @current_user ||= User.find_or_create env['HTTP_USER_TOKEN']
-end
-
 def merge_id_in_attr list
   list.to_a.map { |t| t.attributes.merge id: t.id }
 end

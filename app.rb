@@ -5,7 +5,7 @@ def authenticate!
 end
 
 def current_user
-  User.find_or_create env['HTTP_USER_TOKEN']
+  @current_user ||= User.find_or_create env['HTTP_USER_TOKEN']
 end
 
 Cuba.define do
