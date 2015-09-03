@@ -7,13 +7,13 @@ scope 'With invalid tokens' do
     Ohm.flush
   end
 
-  test 'Don\'t create a user without token' do
+  test 'Raise and error if token is nil' do
     get '/tasks'
     assert_equal User.all.count, 0
     assert_equal last_response.status, 401
   end
 
-  test 'Don\'t create a user with a bad token' do
+  test 'Raise and error if token is wrong' do
     header 'User-Token', 'bad-token'
     override User, email_from_token: nil
     get '/tasks'

@@ -17,15 +17,10 @@ def body_json
   JSON.parse last_response.body, symbolize_names: true
 end
 
-scope 'With valid user and token' do
+scope 'With valid user' do
   setup do
     User.create email: 'jack@mail.com', token: 'good-token'
     header 'User-Token', 'good-token'
-  end
-
-  test 'Create a new task' do
-    post '/tasks', task_body.to_json
-    assert_equal user.tasks.count, 1
   end
 
   test 'User\'s todo tasks' do
@@ -40,14 +35,15 @@ scope 'With valid user and token' do
     assert_equal body_json.first[:name], 'Make coffee'
   end
 
+  test 'Create a new task' do
+    post '/tasks', task_body.to_json
+    assert_equal user.tasks.count, 1
+    assert_equal last_response.status, 200
+  end
+
   test 'Update a task' do
     put "/tasks/#{ task }", { task: { name: 'Make mates' } }.to_json
     assert_equal user.tasks.first.attributes[:name], 'Make mates'
-  end
-
-  test 'Delete a task' do
-    delete "/tasks/#{ task }"
-    assert_equal user.tasks.count, 0
   end
 
   test 'Mark a task as done' do
@@ -60,11 +56,18 @@ scope 'With valid user and token' do
     assert_equal user.tasks.first.attributes[:state], 'todo'
   end
 
+  test 'Delete a task' do
+    delete "/tasks/#{ task }"
+    assert_equal user.tasks.count, 0
+    assert_equal last_response.status, 200
+  end
+
   test 'Get all the tasks' do
     user.tasks.add Task.create name: 'Now is make'
     put "/tasks/#{ task }/done"
     assert_equal user.tasks.count, 2
-    assert_equal user.tasks.first.attributes[:state], 'done'
-    assert_equal user.tasks[2].attributes[:state], 'todo'
+
+    get '/tasks/all'
+    assert_equal body_json.size, 2
   end
 end
