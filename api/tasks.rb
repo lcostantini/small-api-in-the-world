@@ -8,6 +8,7 @@ end
 
 class Tasks < Cuba
   define do
+
     on get do
       on root do
         tasks = merge_id_in_attr current_user.tasks.find state: 'todo'
@@ -20,13 +21,13 @@ class Tasks < Cuba
       end
 
       on 'category', param('topic') do |query|
-        res.write merge_id_in_attr(current_user.tasks.find(category: query)).to_json
+        tasks = merge_id_in_attr current_user.tasks.find category: query
+        res.write tasks.to_json
       end
     end
 
     on post do
-      task = current_user.tasks.add Task.create json_body[:task]
-      res.write task
+      current_user.tasks.add Task.create json_body[:task]
       res.status = 201
     end
 
@@ -35,23 +36,26 @@ class Tasks < Cuba
 
       on put do
         on root do
-          task = task.update json_body[:task].reject { |_, v| v.nil? }
-          res.write task.attributes.to_json
+          task.update json_body[:task].reject { |_, v| v.nil? }
+          res.status = 204
         end
 
         on 'done' do
-          res.write task.done!
+          task.done!
+          res.status = 204
         end
 
         on 'undone' do
-          res.write task.undone!
+          task.undone!
+          res.status = 204
         end
       end
 
       on delete do
         current_user.tasks.delete task
-        res.status = 200
+        res.status = 204
       end
     end
+
   end
 end
