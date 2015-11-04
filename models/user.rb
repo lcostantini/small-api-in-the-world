@@ -18,7 +18,7 @@ class User < Ohm::Model
 
   private
 
-  def email_from_token token
+  def self.email_from_token token
     @email ||= JSON.parse(`curl -u #{ token }:x-oauth-basic https://api.github.com/user`)['email']
   end
 end

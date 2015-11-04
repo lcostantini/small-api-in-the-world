@@ -6,8 +6,9 @@ Dir["./models/*.rb"].each { |rb| require rb  }
 
 Ohm.redis = Redic.new(ENV['REDISTOGO_URL'] || "redis://localhost:6379")
 
-def authenticate!
-  raise 'Unauthorized' unless current_user
+def validate_access!
+  raise(StandardError, 'The file doesn\'t contain the token') if env['HTTP_USER_TOKEN'].empty?
+  raise(StandardError, 'Unauthorized') unless current_user
 end
 
 def current_user
@@ -17,7 +18,7 @@ end
 Cuba.define do
   begin
 
-    authenticate!
+    validate_access!
 
     on 'tasks' do
       run Tasks
@@ -26,7 +27,7 @@ Cuba.define do
   rescue StandardError => e
     on true do
       res.status = 401
-      res.write errors: e.message
+      res.write "{ \"errors\": \"#{ e.message }\" }"
     end
   end
 end

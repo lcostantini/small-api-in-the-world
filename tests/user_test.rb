@@ -1,14 +1,19 @@
 require 'override'
 include Override
 
+def json_body
+  JSON.parse last_response.body, symbolize_names: true
+end
+
 scope 'With invalid tokens' do
   setup do
     Ohm.flush
   end
 
-  test 'Raise and error if token is nil' do
+  test 'Raise and error if token is empty' do
+    header 'User-Token', ''
     get '/tasks'
-    assert_equal User.all.count, 0
+    assert_equal json_body[:errors], 'The file doesn\'t contain the token'
     assert_equal last_response.status, 401
   end
 
