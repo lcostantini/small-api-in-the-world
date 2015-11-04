@@ -1,17 +1,15 @@
 source 'https://rubygems.org'
 
-ruby '2.2.1'
-
-gem 'cuba'
-gem 'ohm', '~> 2.0.1'
-gem 'json'
+gem 'cuba',        '~> 3.4'
+gem 'ohm',         '~> 2.3'
+gem 'json',        '~> 1.8'
 
 group :development, :test do
-  gem 'pry'
+  gem 'pry',       '~> 0.10'
 end
 
 group :test do
-  gem 'rack-test'
-  gem 'cutest'
-  gem 'override'
+  gem 'rack-test', '~> 0.6'
+  gem 'cutest',    '~> 1.2'
+  gem 'override',  '~> 0.0.10'
 end
