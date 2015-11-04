@@ -1,5 +1,3 @@
-require './tests/test_helper'
-
 def user
   @user ||= User.with :token, 'good-token'
 end
@@ -38,12 +36,13 @@ scope 'With valid user' do
   test 'Create a new task' do
     post '/tasks', task_body.to_json
     assert_equal user.tasks.count, 1
-    assert_equal last_response.status, 200
+    assert_equal last_response.status, 201
   end
 
   test 'Update a task' do
     put "/tasks/#{ task }", { task: { name: 'Make mates' } }.to_json
     assert_equal user.tasks.first.attributes[:name], 'Make mates'
+    assert_equal last_response.status, 204
   end
 
   test 'Mark a task as done' do
@@ -59,7 +58,7 @@ scope 'With valid user' do
   test 'Delete a task' do
     delete "/tasks/#{ task }"
     assert_equal user.tasks.count, 0
-    assert_equal last_response.status, 200
+    assert_equal last_response.status, 204
   end
 
   test 'Get all the tasks' do
