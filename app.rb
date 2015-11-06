@@ -4,7 +4,7 @@ require 'json'
 require './api/tasks'
 Dir["./models/*.rb"].each { |rb| require rb  }
 
-Ohm.redis = Redic.new(ENV['REDISTOGO_URL'] || "redis://localhost:6379")
+Ohm.redis = Redic.new(ENV['REDISCLOUD_URL'] || "redis://localhost:6379")
 
 def validate_access!
   raise(StandardError, 'The file doesn\'t contain the token') if env['HTTP_USER_TOKEN'].empty?
