@@ -23,6 +23,10 @@ class Task < Ohm::Model
     super
   end
 
+  def to_hash
+    super.merge self.attributes
+  end
+
   private
 
   def initial_values

@@ -1,33 +1,32 @@
-def merge_id_in_attr list
-  list.to_a.map { |t| t.attributes.merge id: t.id }
+def attributes tasks
+  tasks.map(&:to_hash).to_json
 end
 
-def json_body
+def body_json
   JSON.parse req.body.read, symbolize_names: true
 end
 
 class Tasks < Cuba
   define do
 
+    tasks = current_user.tasks
+
     on get do
       on root do
-        tasks = merge_id_in_attr current_user.tasks.find state: 'todo'
-        res.write tasks.to_json
+        res.write attributes tasks.find(state: 'todo')
       end
 
       on 'all' do
-        tasks = merge_id_in_attr current_user.tasks
-        res.write tasks.to_json
+        res.write attributes tasks
       end
 
       on 'category', param('topic') do |query|
-        tasks = merge_id_in_attr current_user.tasks.find category: query
-        res.write tasks.to_json
+        res.write attributes tasks.find(category: query)
       end
     end
 
     on post do
-      current_user.tasks.add Task.create json_body[:task]
+      tasks.add Task.create body_json[:task]
       res.status = 201
     end
 
@@ -36,7 +35,7 @@ class Tasks < Cuba
 
       on put do
         on root do
-          task.update json_body[:task].reject { |_, v| v.nil? }
+          task.update body_json[:task].reject { |_, v| v.nil? }
           res.status = 204
         end
 
@@ -52,7 +51,7 @@ class Tasks < Cuba
       end
 
       on delete do
-        current_user.tasks.delete task
+        tasks.delete task
         res.status = 204
       end
     end
