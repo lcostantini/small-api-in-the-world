@@ -11,7 +11,7 @@ def task
   user.tasks.add Task.create task_body[:task]
 end
 
-def body_json
+def json_body
   JSON.parse last_response.body, symbolize_names: true
 end
 
@@ -24,13 +24,13 @@ scope 'With valid user' do
   test 'User\'s todo tasks' do
     task
     get '/tasks'
-    assert_equal body_json.size, 1
+    assert_equal json_body.size, user.tasks.count
   end
 
   test 'Get all tasks for a specific category' do
     task
     get '/tasks/category?topic=testing'
-    assert_equal body_json.first[:name], 'Make coffee'
+    assert_equal json_body.first[:name], 'Make coffee'
   end
 
   test 'Create a new task' do
@@ -48,11 +48,13 @@ scope 'With valid user' do
   test 'Mark a task as done' do
     put "/tasks/#{ task }/done"
     assert_equal user.tasks.first.attributes[:state], 'done'
+    assert_equal last_response.status, 204
   end
 
   test 'Mark a task as undone' do
     put "/tasks/#{ task }/undone"
     assert_equal user.tasks.first.attributes[:state], 'todo'
+    assert_equal last_response.status, 204
   end
 
   test 'Delete a task' do
@@ -61,12 +63,10 @@ scope 'With valid user' do
     assert_equal last_response.status, 204
   end
 
-  test 'Get all the tasks' do
-    user.tasks.add Task.create name: 'Now is make'
+  test 'Get all the tasks, one is created and one is marked as done' do
+    post '/tasks', task_body.to_json
     put "/tasks/#{ task }/done"
-    assert_equal user.tasks.count, 2
-
     get '/tasks/all'
-    assert_equal body_json.size, 2
+    assert_equal json_body.size, user.tasks.count
   end
 end
