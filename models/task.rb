@@ -8,7 +8,6 @@ class Task < Ohm::Model
   index :created_at
   index :state
   index :category
-  reference :user, :User
 
   def done!
     update state: 'done'
