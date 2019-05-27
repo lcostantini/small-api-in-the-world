@@ -17,4 +17,4 @@ prepare do
   Ohm.flush
 end
 
-Dir["./tests/*.rb"].each { |rb| require rb }
+Dir["./test/**/*.rb"].each { |rb| require rb }
