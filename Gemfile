@@ -7,6 +7,7 @@ gem 'ohm', '~> 3.1'
 gem 'json', '~> 2.2'
 
 group :development, :test do
+  gem 'dotenv', '~> 2.7'
   gem 'pry', '~> 0.12'
 end
 
