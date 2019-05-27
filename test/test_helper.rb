@@ -1,6 +1,6 @@
 ENV['REDISCLOUD_URL'] = 'redis://localhost:6379/2'
 
-require './app'
+require './config/application'
 require 'cutest'
 require 'pry'
 require 'rack/test'

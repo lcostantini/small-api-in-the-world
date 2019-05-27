@@ -2,6 +2,8 @@ require 'cuba'
 require 'ohm'
 require 'json'
 require 'dotenv/load'
+
+require './app'
 require './api/tasks'
 
 def validate_access!
