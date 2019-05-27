@@ -1,6 +1,7 @@
 require 'cuba'
 require 'ohm'
 require 'json'
+require 'dotenv/load'
 require './api/tasks'
 require './lib/github_api'
 
