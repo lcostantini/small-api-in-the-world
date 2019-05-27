@@ -6,7 +6,7 @@ scope 'fetch email by username' do
   end
 
   test 'raise an error when something went wrong' do
-    assert_raise(StandardError) do
+    assert_raise(GithubAPIError) do
       GithubAPI.fetch_email('abc123')
     end
   end

@@ -15,7 +15,7 @@ class GithubAPI
     private
 
     def handle_request(response)
-      raise StandardError, response.message if response.code != '200'
+      raise GithubAPIError, response.message if response.code != '200'
 
       JSON.parse(response.body)
     end
