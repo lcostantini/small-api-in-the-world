@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '~> 2.6'
 
+gem 'bcrypt', '~> 3.1'
 gem 'cuba', '~> 3.9'
 gem 'ohm', '~> 3.1'
 gem 'json', '~> 2.2'

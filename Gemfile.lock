@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bcrypt (3.1.12)
     clap (1.0.0)
     coderay (1.1.2)
     cuba (3.9.2)
@@ -33,6 +34,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt (~> 3.1)
   cuba (~> 3.9)
   cutest (~> 1.2)
   dotenv (~> 2.7)
