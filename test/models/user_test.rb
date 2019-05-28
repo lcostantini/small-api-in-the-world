@@ -1,58 +1,37 @@
-require 'override'
-include Override
+scope '#sign_up' do
+  test 'returns a user with a token' do
+    user = User.sign_up('foo@bar.com', 'pass')
 
-def json_body
-  JSON.parse last_response.body, symbolize_names: true
-end
-
-scope 'With invalid tokens' do
-  setup do
-    Ohm.flush
-  end
-
-  test 'Raise and error if token is empty' do
-    header 'User-Token', ''
-    get '/tasks'
-    assert_equal json_body[:errors], 'The file doesn\'t contain the token'
-    assert_equal last_response.status, 401
-  end
-
-  test 'Raise and error if token is wrong' do
-    header 'User-Token', 'bad-token'
-    override User, email_from_token: nil
-    get '/tasks'
-    assert_equal User.all.count, 0
-    assert_equal last_response.status, 401
+    assert !user.token.nil?
   end
 end
 
-scope 'With valid tokens' do
-  setup do
-    header 'User-Token', 'good-token'
+scope '#log_in_with_credentials' do
+  test 'returns a user with the correct credentials' do
+    assert !User.log_in_with_credentials('jon@snow.com', 'pass').nil?
   end
 
-  test 'Create a user' do
-    override User, email_from_token: 'jack@email.com'
-    get '/tasks'
-    assert_equal User.all.count, 1
-    assert_equal User[1].attributes[:email], 'jack@email.com'
+  test 'returns nil when the the user does not exists' do
+    assert User.log_in_with_credentials('new_user@email.com', 'pass').nil?
   end
 
-  test 'Find an existing user' do
-    User.create email: 'jack@email.com', token: 'good-token'
-    get '/tasks'
-    assert_equal last_response.status, 200
-    assert_equal User.all.count, 1
-    assert_equal User[1].attributes[:email], 'jack@email.com'
+  test 'returns nil when the password is incorrect' do
+    assert User.log_in_with_credentials('jon@snow.com', 'invalid pass').nil?
+  end
+end
+
+scope '#find_or_create ' do
+  test 'returns a user when is in the DB' do
+    total_users =  User.all.count
+
+    assert !User.find_or_create('jon@snow.com', 'pass').nil?
+    assert_equal User.all.count, total_users
   end
 
-  test 'Find an existing user if token is different' do
-    User.create email: 'jack@email.com', token: 'good-token'
-    header 'User-Token', 'other-good-token'
-    override User, email_from_token: 'jack@email.com'
-    get '/tasks'
-    assert_equal last_response.status, 200
-    assert_equal User.all.count, 1
-    assert_equal User[1].attributes[:email], 'jack@email.com'
+  test 'returns a user after creation' do
+    total_users =  User.all.count
+
+    assert !User.find_or_create('sansa@stark.com', 'pass').nil?
+    assert_equal User.all.count, (total_users + 1)
   end
 end

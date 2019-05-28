@@ -1,24 +1,43 @@
+require 'bcrypt'
+require 'securerandom'
+
 class User < Ohm::Model
   attribute :email
+  attribute :password
   attribute :token
-  unique :token
   unique :email
+  unique :token
   set :tasks, :Task
 
-  def self.find_or_create token
-    with(:token, token) ||
-      with(:email, email_from_token(token)) ||
-        create(email: email_from_token(token), token: token)
+  def self.sign_up(email, password)
+    create(email: email,
+           password: encrypt_password(password),
+           token: SecureRandom.uuid)
   end
 
-  def self.create args
-    raise 'The token was invalid and no return an email.' unless args[:email]
-    super
+  def self.log_in_with_credentials(email, password)
+    user = with(:email, email)
+
+    return user if user&.correct_password?(password)
+
+    nil
+  end
+
+  def self.log_in_with_token(token)
+    with(:token, token)
+  end
+
+  def self.find_or_create(email, password)
+    log_in_with_credentials(email, password) || sign_up(email, password)
+  end
+
+  def correct_password?(password)
+    BCrypt::Password.new(self.password) == password
   end
 
   private
 
-  def self.email_from_token token
-    @email ||= JSON.parse(`curl -u #{ token }:x-oauth-basic https://api.github.com/user`)['email']
+  def self.encrypt_password(password)
+    BCrypt::Password.create(password)
   end
 end

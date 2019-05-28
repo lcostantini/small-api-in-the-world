@@ -15,6 +15,8 @@ end
 
 prepare do
   Ohm.flush
+
+  User.sign_up('jon@snow.com', 'pass')
 end
 
 Dir["./test/**/*.rb"].each { |rb| require rb }
