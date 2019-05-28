@@ -15,5 +15,4 @@ end
 group :test do
   gem 'rack-test', '~> 1.1'
   gem 'cutest', '~> 1.2'
-  gem 'override', '~> 0.0.10'
 end
