@@ -2,9 +2,7 @@ require 'cuba'
 require 'ohm'
 require 'json'
 require 'dotenv/load'
-
 require './app'
-require './api/tasks'
 
 def validate_access!
   raise(StandardError, 'The file doesn\'t contain the token') if env['HTTP_USER_TOKEN'].empty?
@@ -17,4 +15,5 @@ end
 
 Ohm.redis = Redic.new(ENV['REDISCLOUD_URL'] || "redis://localhost:6379")
 
-Dir["./models/*.rb"].each { |rb| require rb }
+Dir['./api/*.rb'].each { |rb| require rb }
+Dir['./models/*.rb'].each { |rb| require rb }

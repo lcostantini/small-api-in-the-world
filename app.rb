@@ -1,6 +1,10 @@
 Cuba.define do
   begin
-    validate_access!
+    # validate_access!
+
+    on 'users' do
+      run Users
+    end
 
     on 'tasks' do
       run Tasks
