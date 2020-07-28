@@ -4,7 +4,7 @@ ruby '~> 2.6'
 
 gem 'cuba', '~> 3.9'
 gem 'ohm', '~> 3.1'
-gem 'json', '~> 2.2'
+gem 'json', '~> 2.3'
 
 group :development, :test do
   gem 'dotenv', '~> 2.7'
